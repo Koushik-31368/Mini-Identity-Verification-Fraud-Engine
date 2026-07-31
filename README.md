@@ -127,16 +127,63 @@ streamlit run app/main.py
 
 ## Results & Metrics
 
-### Liveness Model (MobileNetV2 Transfer Learning)
-- **Architecture**: MobileNetV2 base (frozen) + custom head (1280→512→2)
-- **Trainable params**: 656,898 / 2,880,770 (22.8%)
-- **Training**: ~10 epochs on ~300 images with augmentation
-- *(Accuracy/loss metrics will be populated after training with your dataset)*
-
 ### Fraud Detection (Random Forest)
 - **Model**: 100 trees, max_depth=10, balanced class weights
 - **Dataset**: Kaggle Credit Card Fraud (284,807 transactions, 0.17% fraud rate)
-- *(Precision/recall/F1 metrics will be populated after training)*
+- **Train/test split**: 227,845 / 56,962 (80/20, stratified)
+
+| Metric | Value |
+|--------|-------|
+| Accuracy | 99.90% |
+| Precision | 66.14% |
+| Recall | 85.71% |
+| F1 Score | 74.67% |
+
+**Confusion matrix** (test set, n=56,962):
+
+|  | Predicted Legit | Predicted Fraud |
+|--|:--:|:--:|
+| **Actual Legit** (n=56,864) | 56,821 | 43 |
+| **Actual Fraud** (n=98) | 14 | 84 |
+
+Top features by importance: V10 (0.16), V14 (0.14), V4 (0.14), V12 (0.10), V11 (0.09).
+
+> **Note on precision**: The 66% precision reflects the extreme class imbalance (0.17% fraud).
+> The model catches 86% of actual fraud while generating relatively few false positives (43 out of 56,864 legit transactions).
+
+### Liveness Model (MobileNetV2 Transfer Learning)
+- **Architecture**: MobileNetV2 base (frozen) + custom head (1280→512→2)
+- **Trainable params**: 656,898 / 2,880,770 (22.8%)
+- **Dataset**: 223 images (120 real + 103 spoof), augmented from ~40 originals
+- **Augmentation**: horizontal flip, brightness/contrast jitter, rotation ±15°, zoom
+- **Train/val split**: 179 / 44 (80/20)
+
+| Epoch | Train Loss | Train Acc | Val Loss | Val Acc |
+|:-----:|:----------:|:---------:|:--------:|:-------:|
+| 1 | 0.2759 | 89.39% | 0.0426 | 100.00% |
+| 2 | 0.1899 | 93.30% | 0.0041 | 100.00% |
+| 3 | 0.0411 | 98.88% | 0.0004 | 100.00% |
+| 5 | 0.3782 | 91.06% | 0.0062 | 100.00% |
+| 10 | 0.0665 | 98.32% | 0.0000 | 100.00% |
+
+- **Best validation accuracy**: 100.00%
+- **Inference test**: Real face → "real" (99.9% confidence), Spoof face → "spoof" (99.0% confidence)
+
+> **Note on 100% val accuracy**: The real (webcam selfies) vs. spoof (photos of photos sent via WhatsApp)
+> classes have very distinct visual characteristics, making this a relatively easy binary classification task
+> with transfer learning on MobileNetV2. This accuracy would likely drop on more sophisticated spoofing
+> attacks (e.g., high-quality screen replays, 3D masks).
+
+### Face Match (DeepFace + VGG-Face)
+- **Method**: VGG-Face embeddings via DeepFace, cosine distance
+- **Test result**: Match confirmed with 65.7% confidence (distance=0.3431, threshold=0.68)
+- Face detection via Mediapipe (used as a pre-check before DeepFace)
+
+### End-to-End Pipeline Test
+- **Test inputs**: Sample ID photo + selfie (same person) + known fraud transaction
+- **Module scores**: Doc Parsing=0.00, Tamper=1.00, Face Match=0.66, Liveness=0.96, Fraud=0.05
+- **Final score**: 0.68 / 1.00
+- **Verdict**: FLAGGED FOR REVIEW (correct — the intentionally fraudulent transaction data pulled the score below the 0.70 verification threshold)
 
 ## Project Structure
 

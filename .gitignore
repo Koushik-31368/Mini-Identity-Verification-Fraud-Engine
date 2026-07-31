@@ -19,6 +19,11 @@ models/*.h5
 data/creditcard.csv
 data/temp_faces/
 data/temp_uploads/
+data/real/
+data/spoof/
+data/liveness/
+data/sample_docs/test_id_photo.jpg
+data/sample_docs/test_selfie.jpg
 
 # OS files
 .DS_Store

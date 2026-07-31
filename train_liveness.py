@@ -40,7 +40,7 @@ from src.liveness_model import build_model
 
 
 # ── Configuration ────────────────────────────────────────────────────
-DATA_DIR = "data"                       # Contains real/ and spoof/ subfolders
+DATA_DIR = "data/liveness"               # Contains real/ and spoof/ subfolders
 MODEL_SAVE_PATH = "models/liveness_model.pt"
 BATCH_SIZE = 16                          # Images per training step
 NUM_EPOCHS = 10                          # Full passes through the training data
