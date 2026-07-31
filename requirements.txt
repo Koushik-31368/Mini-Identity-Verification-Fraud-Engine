@@ -1,0 +1,41 @@
+# ============================================================
+# Mini Identity Verification & Fraud Engine - requirements.txt
+# Python 3.11 required (deepface + tensorflow don't support 3.14 yet)
+# ============================================================
+
+# ── Core numerics & ML ──────────────────────────────────────
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# ── Deep Learning ───────────────────────────────────────────
+torch>=2.1.0            # PyTorch (for CNN / MobileNetV2 fine-tuning)
+torchvision>=0.16.0     # ImageNet pretrained models
+
+# ── Computer Vision ─────────────────────────────────────────
+opencv-python>=4.8.0    # Image reading, resizing, edge/noise analysis
+Pillow>=10.0.0          # PIL-based image utilities
+
+# ── OCR ─────────────────────────────────────────────────────
+easyocr>=1.7.0          # GPU-optional OCR with bounding boxes
+
+# ── Face Recognition ────────────────────────────────────────
+deepface                # High-level face verification API (no dlib/C++ needed)
+tf-keras                # Required by DeepFace's retinaface with TF 2.21+
+
+# ── Pose / Landmark detection ───────────────────────────────
+mediapipe>=0.10.0       # Face mesh & liveness landmarks
+
+# ── Streamlit UI ────────────────────────────────────────────
+streamlit>=1.32.0       # Web UI for the demo app
+streamlit-webrtc>=0.47  # Webcam stream inside Streamlit (liveness)
+
+# ── Visualisation & Reporting ───────────────────────────────
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ── Utilities ───────────────────────────────────────────────
+tqdm>=4.66.0            # Progress bars during training
+python-dotenv>=1.0.0    # Optional: load .env secrets
+imutils>=0.5.4          # OpenCV helper utilities
